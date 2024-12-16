@@ -23,7 +23,7 @@ cron.schedule('*/5 * * * *', async () => {
 
 // Iniciando o servidor e o cliente do WhatsApp
 const app = express();
-const port = 8081;
+const port = process.env.PORT || 8081;
 const client = new Client();
 const genAI = new GoogleGenerativeAI('AIzaSyAZsyLfd1f5hXpb9PmyheeY5IRbMLsP6VY'); // Substitua pela sua chave de API do Gemini
 
