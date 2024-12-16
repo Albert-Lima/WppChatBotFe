@@ -5,21 +5,6 @@ const mongoose = require('mongoose');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require("path")
 
-//utilizando node-cron para manter a aplição rodando no render
-//ele faz requisições para o servidor não "apague"
-const cron = require("node-cron")
-const axios = require("axios")
-
-cron.schedule('*/5 * * * *', async () => {
-    try {
-      console.log('Executando ping para manter o servidor ativo...');
-      await axios.get('https://wppchatbotfe.onrender.com/ping');
-      console.log('Ping bem-sucedido!');
-    } catch (error) {
-      console.error('Erro ao fazer o ping:', error.message);
-    }
-});
-
 
 // Iniciando o servidor e o cliente do WhatsApp
 const app = express();
