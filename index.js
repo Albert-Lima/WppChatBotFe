@@ -13,7 +13,7 @@ const axios = require("axios")
 cron.schedule('*/5 * * * *', async () => {
     try {
       console.log('Executando ping para manter o servidor ativo...');
-      await axios.get('http://localhost:8081/ping');
+      await axios.get('https://wppchatbotfe.onrender.com/ping');
       console.log('Ping bem-sucedido!');
     } catch (error) {
       console.error('Erro ao fazer o ping:', error.message);
