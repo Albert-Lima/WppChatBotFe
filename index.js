@@ -151,7 +151,7 @@ client.on('message', async (message) => {
                     const agencyGroup = await AgencyGroup.findOne({ clientName });
                     if (agencyGroup) {
                         try {
-                            await client.sendMessage(agencyGroup.groupId, `Solicitação do cliente: ${customerMessage}`);
+                            await client.sendMessage(agencyGroup.groupId, `Solicitação do cliente: ${customerMessage}. Respoda com "resposta ao cliente" no início para indicar sua resposta.`);
                             console.log('Mensagem enviada para o fornecedor.');
 
                             // Enviar confirmação para o grupo da agência
@@ -188,22 +188,28 @@ client.on('message', async (message) => {
                 }
             }
         } else if (match[1] === 'agency') {
-            // Verificar se o grupo está armazenado
+            // Verificar se o grupo "agency" está armazenado
             let agencyGroup = await AgencyGroup.findOne({ clientName });
             if (!agencyGroup) {
-                // Armazenar o grupo no banco de dados
+                // Armazenar o grupo "agency" no banco de dados sem enviar mensagens
                 agencyGroup = new AgencyGroup({ clientName, groupId: from });
                 await agencyGroup.save();
                 console.log(`Grupo "agency - ${clientName}" armazenado.`);
+                return; // Nenhuma mensagem será enviada no momento da criação
             }
 
-            // Retransmitir todas as mensagens do fornecedor para o cliente
+            // Processar mensagens recebidas no grupo "agency" somente se já existir
             const agenciaGroup = await AgenciaGroup.findOne({ clientName });
             if (agenciaGroup) {
                 try {
-                    // Sempre envia a mensagem do fornecedor para o cliente, sem verificar o conteúdo
-                    await client.sendMessage(agenciaGroup.groupId, `Resposta do fornecedor: ${customerMessage}`);
-                    console.log('Mensagem do fornecedor enviada para o cliente.');
+                    // Verifica se a mensagem começa com "resposta ao cliente" (case-insensitive)
+                    if (customerMessage.trim().toLowerCase().startsWith("resposta ao cliente")) {
+                        // Envia a mensagem do fornecedor para o cliente
+                        await client.sendMessage(agenciaGroup.groupId, `Resposta do fornecedor: ${customerMessage}`);
+                        console.log('Mensagem do fornecedor enviada para o cliente.');
+                    } else {
+                        console.log('Mensagem do fornecedor ignorada. Não começa com "resposta ao cliente".');
+                    }
                 } catch (error) {
                     console.error('Erro ao enviar mensagem do fornecedor para o cliente:', error);
                 }
@@ -248,8 +254,11 @@ app.get('/', (req, res) => {
 });
 
 //rota para resposta do ping
+// Middleware para habilitar CORS (se necessário)
+const cors = require("cors")
+app.use(cors());
 app.get("/ping", (req, res)=>{
-    res.send("server result => ping!")
+    res.json({ message: "server result => ping!" }); // Responde com JSON
 })
 
 
