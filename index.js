@@ -161,6 +161,7 @@ client.on('message', async (message) => {
                             console.error('Erro ao enviar mensagem para o fornecedor:', error);
                         }
                     } else {
+                        await client.sendMessage(agenciaGroup.groupId, `No momento não foi possível fazer a solicitação ao fornecedor, tente novamente mais tarde.`);
                         console.error(`Grupo de fornecedor "agency - ${clientName}" não encontrado.`);
                     }
                 } else {
