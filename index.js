@@ -12,19 +12,6 @@ const port = process.env.PORT || 8081;
 const client = new Client();
 const genAI = new GoogleGenerativeAI('AIzaSyAZsyLfd1f5hXpb9PmyheeY5IRbMLsP6VY'); // Substitua pela sua chave de API do Gemini
 
-// Tarefa agendada com cron para realizar o ping a cada minuto
-const cron = require("node-cron")
-const axios = require("axios")
-cron.schedule("*/1 * * * *", async () => {
-    try {
-        await axios.get(`http://localhost:${port}/ping`);
-        
-        console.log("Requisição bem-sucedida");
-    } catch (error) {
-        console.error("Erro ao fazer o ping:", error);
-    }
-});
-
 let qrCodeData = null;
 
 // Conectando ao MongoDB
